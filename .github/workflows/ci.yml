@@ -41,7 +41,7 @@ jobs:
           pip install isort flake8
       - name: Check Import Sorting with isort
         run: |
-          isort --check-only spark_jobs/**/*.py
+          isort --check-only spark_jobs/*.py
       - name: Check Code Style with Flake8
         run: |
-          flake8 spark_jobs/**/*.py
+          flake8 spark_jobs/*.py
