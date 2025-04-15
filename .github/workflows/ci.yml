@@ -39,9 +39,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install isort flake8
-      # - name: Check Import Sorting with isort
-      #   run: |
-      #     isort --check-only ./spark_jobs/**/*.py ./orchestration/**/*.py
+      - name: Check Import Sorting with isort
+        run: |
+          isort --check-only spark_jobs/*.py
       # - name: Check Code Style with Flake8
       #   run: |
-      #     flake8 ./spark_jobs/**/*.py ./orchestration/**/*.py
+      #     flake8 spark_jobs/*.py
