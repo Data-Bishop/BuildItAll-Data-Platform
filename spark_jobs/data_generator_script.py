@@ -1,27 +1,12 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Import libraries
+import random
 
-# In[14]:
-
-
-#import libraries
 import pandas as pd
 from faker import Faker
 
-import random
-from datetime import datetime
-
-
-# In[4]:
-
-
-#Initialize faker and increase the seed for reproducibility
-
+# Initialize faker and increase the seed for reproducibility
 fake = Faker()
 Faker.seed(42)
-
-
-# In[6]:
 
 
 def generate_customers(n=500_000):
@@ -36,14 +21,10 @@ def generate_customers(n=500_000):
     return df
 
 
-# In[7]:
-
-
 def generate_products(n=800_000):
-    """To generate 800,000 products 'listed' 
-    on the website in different categories"""
-    
-    categories = ['Electronics','Jewelry','Shoes', 'Clothing', 'Tools', 'Books', 'Toys']
+    """To generate 800,000 products 'listed' on the website in different categories"""
+
+    categories = ['Electronics', 'Jewelry', 'Shoes', 'Clothing', 'Tools', 'Books', 'Toys']
     data = [{
         "product_id": i,
         "name": fake.word().capitalize() + " " + fake.word().capitalize(),
@@ -53,13 +34,9 @@ def generate_products(n=800_000):
     df = pd.DataFrame(data)
     return df
 
-
-# In[8]:
-
-
 def generate_orders(n=1_300_000, customer_count=500_000):
     """To generate 1.3M order transactions for our 500,000 customers"""
-    
+
     data = [{
         "order_id": i,
         "customer_id": random.randint(1, customer_count),
@@ -69,13 +46,9 @@ def generate_orders(n=1_300_000, customer_count=500_000):
     df = pd.DataFrame(data)
     return df
 
-
-# In[9]:
-
-
 def generate_order_items(n=1_000_000, order_count=1_300_000, product_count=800_000):
     """To generate 1M order_items which would give details on order transactions on our listed products"""
-    
+
     data = [{
         "order_id": random.randint(1, order_count),
         "product_id": random.randint(1, product_count),
@@ -84,10 +57,6 @@ def generate_order_items(n=1_000_000, order_count=1_300_000, product_count=800_0
     } for _ in range(n)]
     df = pd.DataFrame(data)
     return df
-
-
-# In[11]:
-
 
 def generate_payments(n=1_500_000, order_count=1_300_000):
     """To generate 1.5M payment transactions details for our 1.3M order transactions"""
@@ -104,14 +73,9 @@ def generate_payments(n=1_500_000, order_count=1_300_000):
     df = pd.DataFrame(data)
     return df
 
-
-# In[12]:
-
-
 if __name__ == "__main__":
     customers = generate_customers()
     products = generate_products()
     orders = generate_orders()
     order_items = generate_order_items()
     payments = generate_payments()
-
