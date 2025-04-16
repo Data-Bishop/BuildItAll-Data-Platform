@@ -1,5 +1,6 @@
 aws_region          = "eu-west-1"
 project_name        = "BuildItAll"
+aws_account_id      = "905418032356"
 data_bucket_name    = "builditall-client-data"
 airflow_bucket_name = "builditall-airflow"
 logs_bucket_name    = "builditall-logs"
