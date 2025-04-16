@@ -10,7 +10,7 @@ module "s3" {
 module "vpc" {
   source       = "./modules/vpc"
   project_name = var.project_name
-  
+
 }
 
 module "airflow_ec2" {
