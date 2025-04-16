@@ -1,16 +1,22 @@
+module "emr" {
+  source       = "./modules/emr"
+  project_name = var.project_name
+}
+
 module "s3" {
-  source              = "./modules/s3"
-  data_bucket_name    = var.data_bucket_name
-  airflow_bucket_name = var.airflow_bucket_name
-  logs_bucket_name    = var.logs_bucket_name
-  project_name        = var.project_name
-  aws_account_id      = var.aws_account_id
+  source               = "./modules/s3"
+  data_bucket_name     = var.data_bucket_name
+  airflow_bucket_name  = var.airflow_bucket_name
+  logs_bucket_name     = var.logs_bucket_name
+  project_name         = var.project_name
+  aws_account_id       = var.aws_account_id
+  airflow_role_arn     = module.airflow_ec2.airflow_role_arn
+  emr_default_role_arn = module.emr.emr_default_role_arn
 }
 
 module "vpc" {
   source       = "./modules/vpc"
   project_name = var.project_name
-
 }
 
 module "airflow_ec2" {

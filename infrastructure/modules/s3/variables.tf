@@ -21,3 +21,13 @@ variable "logs_bucket_name" {
 variable "aws_account_id" {
   description = "AWS account ID"
 }
+
+variable "airflow_role_arn" {
+  description = "ARN of the Airflow IAM role"
+  type        = string
+}
+
+variable "emr_default_role_arn" {
+  description = "ARN of the EMR Default Role"
+  type        = string
+}

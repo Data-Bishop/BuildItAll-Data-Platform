@@ -73,7 +73,7 @@ resource "aws_s3_bucket_policy" "airflow_bucket_policy" {
         Effect = "Allow"
         Principal = {
           AWS = [
-            "arn:aws:iam::${var.aws_account_id}:role/${var.project_name}-Airflow-Role",
+            var.airflow_role_arn,
             "arn:aws:iam::${var.aws_account_id}:user/builditall-admin"
           ]
         }
@@ -100,9 +100,9 @@ resource "aws_s3_bucket_policy" "data_bucket_policy" {
         Effect = "Allow"
         Principal = {
           AWS = [
-            "arn:aws:iam::${var.aws_account_id}:role/${var.project_name}-Airflow-Role",
+            var.airflow_role_arn,
             "arn:aws:iam::${var.aws_account_id}:user/builditall-admin",
-            "arn:aws:iam::${var.aws_account_id}:role/EMR_DefaultRole"
+            var.emr_default_role_arn
           ]
         }
         Action = [
@@ -117,6 +117,7 @@ resource "aws_s3_bucket_policy" "data_bucket_policy" {
       }
     ]
   })
+  depends_on = [var.airflow_role_arn, var.emr_default_role_arn]
 }
 
 resource "aws_s3_bucket_policy" "logs_bucket_policy" {
@@ -128,8 +129,8 @@ resource "aws_s3_bucket_policy" "logs_bucket_policy" {
         Effect = "Allow"
         Principal = {
           AWS = [
-            "arn:aws:iam::${var.aws_account_id}:role/${var.project_name}-Airflow-Role",
-            "arn:aws:iam::${var.aws_account_id}:role/EMR_DefaultRole"
+            var.airflow_role_arn,
+            var.emr_default_role_arn
           ]
         }
         Action = [
@@ -144,4 +145,5 @@ resource "aws_s3_bucket_policy" "logs_bucket_policy" {
       }
     ]
   })
+  depends_on = [var.airflow_role_arn, var.emr_default_role_arn]
 }
