@@ -21,3 +21,7 @@ variable "vpc_cidr" {
   description = "VPC CIDR block"
   default     = "10.0.0.0/16"
 }
+
+variable "key_pair_name" {
+  description = "SSH key pair name"
+}
