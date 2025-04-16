@@ -129,6 +129,7 @@ resource "aws_instance" "airflow" {
   iam_instance_profile   = aws_iam_instance_profile.airflow_profile.name
   vpc_security_group_ids = [aws_security_group.airflow_sg.id]
   subnet_id              = var.private_subnet_ids[0]
+  key_name               = var.key_pair_name
   root_block_device {
     volume_size = 8
     volume_type = "gp3"
