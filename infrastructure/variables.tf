@@ -8,6 +8,10 @@ variable "project_name" {
   default     = "BuildItAll"
 }
 
+variable "aws_account_id" {
+  description = "AWS account ID"
+}
+
 variable "data_bucket_name" {
   description = "Name of the S3 bucket for data"
   default     = "builditall-client-data"

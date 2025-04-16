@@ -4,4 +4,5 @@ module "s3" {
   airflow_bucket_name = var.airflow_bucket_name
   logs_bucket_name    = var.logs_bucket_name
   project_name        = var.project_name
+  aws_account_id      = var.aws_account_id
 }

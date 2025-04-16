@@ -1,3 +1,8 @@
+variable "project_name" {
+  description = "Project name for tagging"
+  default     = "BuildItAll"
+}
+
 variable "data_bucket_name" {
   description = "Name of the S3 bucket for data"
   default     = "builditall-client-data"
@@ -13,7 +18,6 @@ variable "logs_bucket_name" {
   default     = "builditall-logs"
 }
 
-variable "project_name" {
-  description = "Project name for tagging"
-  default     = "BuildItAll"
+variable "aws_account_id" {
+  description = "AWS account ID"
 }
