@@ -1,5 +1,5 @@
 resource "aws_iam_role" "airflow_role" {
-  name = "${var.project_name}-Airflow-Role"
+  name = "Airflow_Role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -10,6 +10,10 @@ resource "aws_iam_role" "airflow_role" {
       }
     ]
   })
+  tags = {
+    Name        = "${var.project_name}-Airflow-Role"
+    Environment = "Prod"
+  }  
 }
 
 resource "aws_iam_role_policy" "airflow_policy" {
@@ -53,6 +57,16 @@ resource "aws_iam_role_policy" "airflow_policy" {
       {
         Effect = "Allow"
         Action = [
+          "iam:PassRole"
+        ]
+        Resource = [
+          "arn:aws:iam::*:role/EMR_DefaultRole",
+          "arn:aws:iam::*:role/EMR_EC2_DefaultRole"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
@@ -84,13 +98,13 @@ resource "aws_security_group" "airflow_sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]  # VPC CIDR for bastion access
+    cidr_blocks = [var.vpc_cidr]
   }
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # SSM
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
@@ -98,13 +112,16 @@ resource "aws_security_group" "airflow_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = {
+    Name = "${var.project_name}-Airflow-SG"
+  }
 }
 
 resource "aws_instance" "airflow" {
   ami                    = var.ami_id
   instance_type          = "t3.micro"
   iam_instance_profile   = aws_iam_instance_profile.airflow_profile.name
-  security_groups        = [aws_security_group.airflow_sg.name]
+  vpc_security_group_ids = [aws_security_group.airflow_sg.id]
   subnet_id              = var.private_subnet_ids[0]
   root_block_device {
     volume_size = 8
@@ -119,7 +136,16 @@ resource "aws_instance" "airflow" {
               usermod -a -G docker ec2-user
               curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               chmod +x /usr/local/bin/docker-compose
-              mkdir -p /home/ec2-user/airflow
+              mkdir -p /home/ec2-user/airflow/dags /home/ec2-user/airflow/logs
+              # Check if dags exist in S3 before syncing
+              if aws s3 ls s3://builditall-airflow/dags/ >/dev/null 2>&1; then
+                aws s3 sync s3://builditall-airflow/dags/ /home/ec2-user/airflow/dags/
+              fi
+              # Check if requirements.txt exists before copying
+              if aws s3 ls s3://builditall-airflow/requirements/requirements.txt >/dev/null 2>&1; then
+                aws s3 cp s3://builditall-airflow/requirements/requirements.txt /home/ec2-user/airflow/requirements.txt
+              fi
+              chown -R ec2-user:ec2-user /home/ec2-user/airflow
               cat <<'DOCKERCOMPOSE' > /home/ec2-user/airflow/docker-compose.yml
               version: '3'
               services:
@@ -138,16 +164,11 @@ resource "aws_instance" "airflow" {
                     - /home/ec2-user/airflow/airflow.db:/airflow/airflow.db
                   command: >
                     bash -c "
-                      pip install apache-airflow-providers-amazon==6.0.0 &&
                       airflow db init &&
                       airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
                       airflow scheduler & airflow webserver
                     "
               DOCKERCOMPOSE
-              mkdir -p /home/ec2-user/airflow/dags /home/ec2-user/airflow/logs
-              aws s3 sync s3://builditall-airflow/dags/ /home/ec2-user/airflow/dags/
-              aws s3 cp s3://builditall-airflow/requirements/requirements.txt /home/ec2-user/airflow/requirements.txt
-              chown -R ec2-user:ec2-user /home/ec2-user/airflow
               cd /home/ec2-user/airflow
               /usr/local/bin/docker-compose up -d
               EOF
