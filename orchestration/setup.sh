@@ -16,7 +16,7 @@ curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-comp
 chmod +x /usr/local/bin/docker-compose
 
 # Create directories for Airflow
-mkdir -p /home/ec2-user/airflow/dags /home/ec2-user/airflow/logs
+mkdir -p /home/ec2-user/airflow/dags /home/ec2-user/airflow/logs /home/ec2-user/airflow/plugins /home/ec2-user/airflow/config
 
 # Sync DAGs from S3 if they exist
 if aws s3 ls s3://builditall-airflow/dags/ >/dev/null 2>&1; then
@@ -28,5 +28,5 @@ if aws s3 ls s3://builditall-airflow/requirements/requirements.txt >/dev/null 2>
   aws s3 cp s3://builditall-airflow/requirements/requirements.txt /home/ec2-user/airflow/requirements.txt
 fi
 
-# Set permissions
-chown -R ec2-user:ec2-user /home/ec2-user/airflow
+# # Set permissions
+# chown -R ec2-user:ec2-user /home/ec2-user/airflow

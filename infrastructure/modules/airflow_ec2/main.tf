@@ -125,7 +125,7 @@ resource "aws_security_group" "airflow_sg" {
 
 resource "aws_instance" "airflow" {
   ami                    = var.ami_id
-  instance_type          = "t3.micro"
+  instance_type          = "t3.large"
   iam_instance_profile   = aws_iam_instance_profile.airflow_profile.name
   vpc_security_group_ids = [aws_security_group.airflow_sg.id]
   subnet_id              = var.private_subnet_ids[0]
