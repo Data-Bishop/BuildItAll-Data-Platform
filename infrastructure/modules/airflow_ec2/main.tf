@@ -136,48 +136,15 @@ resource "aws_instance" "airflow" {
   }
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y docker
-              systemctl enable docker
-              systemctl start docker
-              usermod -a -G docker ec2-user
-              curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              chmod +x /usr/local/bin/docker-compose
-              mkdir -p /home/ec2-user/airflow/dags /home/ec2-user/airflow/logs
-              # Check if dags exist in S3 before syncing
-              if aws s3 ls s3://builditall-airflow/dags/ >/dev/null 2>&1; then
-                aws s3 sync s3://builditall-airflow/dags/ /home/ec2-user/airflow/dags/
-              fi
-              # Check if requirements.txt exists before copying
-              if aws s3 ls s3://builditall-airflow/requirements/requirements.txt >/dev/null 2>&1; then
-                aws s3 cp s3://builditall-airflow/requirements/requirements.txt /home/ec2-user/airflow/requirements.txt
-              fi
-              chown -R ec2-user:ec2-user /home/ec2-user/airflow
-              cat <<'DOCKERCOMPOSE' > /home/ec2-user/airflow/docker-compose.yml
-              version: '3'
-              services:
-                airflow:
-                  image: apache/airflow:2.6.3
-                  ports:
-                    - "8080:8080"
-                  environment:
-                    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-                    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////airflow/airflow.db
-                    - AIRFLOW__CORE__LOAD_EXAMPLES=false
-                    - AWS_DEFAULT_REGION=eu-west-1
-                  volumes:
-                    - /home/ec2-user/airflow/dags:/opt/airflow/dags
-                    - /home/ec2-user/airflow/logs:/opt/airflow/logs
-                    - /home/ec2-user/airflow/airflow.db:/airflow/airflow.db
-                  command: >
-                    bash -c "
-                      airflow db init &&
-                      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
-                      airflow scheduler & airflow webserver
-                    "
-              DOCKERCOMPOSE
-              cd /home/ec2-user/airflow
-              /usr/local/bin/docker-compose up -d
+              # Download setup script from S3
+              aws s3 cp s3://builditall-airflow/setup.sh /home/ec2-user/setup.sh
+              chmod +x /home/ec2-user/setup.sh
+              /home/ec2-user/setup.sh
+
+              # Download and execute the start script
+              aws s3 cp s3://builditall-airflow/start-airflow.sh /home/ec2-user/start-airflow.sh
+              chmod +x /home/ec2-user/start-airflow.sh
+              /home/ec2-user/start-airflow.sh
               EOF
   tags = {
     Name        = "${var.project_name}-Airflow"

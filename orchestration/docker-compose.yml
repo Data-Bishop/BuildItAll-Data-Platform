@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  airflow-webserver:
+    image: apache/airflow:2.6.3
+    container_name: airflow-webserver
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////airflow/airflow.db
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AWS_DEFAULT_REGION: eu-west-1
+    volumes:
+      - /home/ec2-user/airflow/dags:/opt/airflow/dags
+      - /home/ec2-user/airflow/logs:/opt/airflow/logs
+      - /home/ec2-user/airflow/airflow.db:/airflow/airflow.db
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+        airflow webserver
+      "
+    restart: always
+    depends_on:
+      - airflow-scheduler
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.3
+    container_name: airflow-scheduler
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////airflow/airflow.db
+      AWS_DEFAULT_REGION: eu-west-1
+    volumes:
+      - /home/ec2-user/airflow/dags:/opt/airflow/dags
+      - /home/ec2-user/airflow/logs:/opt/airflow/logs
+      - /home/ec2-user/airflow/airflow.db:/airflow/airflow.db
+    command: >
+      bash -c "
+        airflow scheduler
+      "
+    restart: always
+    depends_on:
+      - airflow-webserver
+
+volumes:
+  airflow-logs:
+  airflow-dags:
