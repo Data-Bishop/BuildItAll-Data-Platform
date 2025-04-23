@@ -53,7 +53,7 @@ with DAG(
     default_args=default_args,
     description='Generate synthetic data daily at 9 AM',
     schedule_interval='0 9 * * *',
-    start_date=datetime(2025, 4, 23),
+    start_date=datetime(2025, 4, 22),
     catchup=False,
 ) as dag:
 
