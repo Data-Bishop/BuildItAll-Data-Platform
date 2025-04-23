@@ -15,4 +15,4 @@ if [ ! -f /tmp/requirements.txt ]; then
 fi
 
 # Install dependencies as hadoop user
-pip3 install --user --no-cache-dir -r /tmp/requirements.txt
+pip3 install --no-cache-dir -r /tmp/requirements.txt
