@@ -43,7 +43,7 @@ JOB_FLOW_OVERRIDES = {
             }
         }
     ],
-    "JobFlowRole": "EMR_EC2_DefaultRole",
+    "JobFlowRole": "BuildItAll-EMR-EC2-Profile",
     "ServiceRole": "EMR_DefaultRole",
     "LogUri": "s3://builditall-logs/emr/",
 }
@@ -64,7 +64,7 @@ with DAG(
 
     generate_step = EmrAddStepsOperator(
         task_id='generate_data',
-        job_flow_id="{{ task_instance.xcom_pull(task_id='create_emr_cluster', key='return_value') }}",
+        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
         steps=[
             {
                 "Name": "Copy Requirements",
@@ -96,13 +96,13 @@ with DAG(
 
     monitor_generate = EmrStepSensor(
         task_id='monitor_generate_data',
-        job_flow_id="{{ task_instance.xcom_pull(task_id='create_emr_cluster', key='return_value') }}",
-        step_id="{{ task_instance.xcom_pull(task_id='generate_data', key='return_value')[1] }}",
+        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
+        step_id="{{ task_instance.xcom_pull(task_ids='generate_data', key='return_value')[1] }}",
     )
 
     terminate_cluster = EmrTerminateJobFlowOperator(
         task_id='terminate_emr_cluster',
-        job_flow_id="{{ task_instance.xcom_pull(task_id='create_emr_cluster', key='return_value') }}",
+        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
     )
 
     create_cluster >> generate_step >> monitor_generate >> terminate_cluster
