@@ -30,29 +30,28 @@ resource "aws_iam_role_policy" "airflow_policy" {
           "s3:ListBucket"
         ]
         Resource = [
-          "arn:aws:s3:::builditall-airflow/dags/*",
-          "arn:aws:s3:::builditall-airflow/requirements/*",
-          "arn:aws:s3:::builditall-airflow/logs/*",
-          "arn:aws:s3:::builditall-client-data/scripts/*",
-          "arn:aws:s3:::builditall-client-data/raw/*",
-          "arn:aws:s3:::builditall-client-data/processed/*",
-          "arn:aws:s3:::builditall-logs/airflow/*",
-          "arn:aws:s3:::builditall-logs/emr/*",
           "arn:aws:s3:::builditall-airflow",
+          "arn:aws:s3:::builditall-airflow/*",
           "arn:aws:s3:::builditall-client-data",
-          "arn:aws:s3:::builditall-logs"
+          "arn:aws:s3:::builditall-client-data/*",
+          "arn:aws:s3:::builditall-logs",
+          "arn:aws:s3:::builditall-logs/*"
         ]
       },
       {
         Effect = "Allow"
         Action = [
-          "emr:RunJobFlow",
-          "emr:TerminateJobFlows",
-          "emr:AddJobFlowSteps",
-          "emr:DescribeStep",
-          "emr:DescribeCluster"
+          "elasticmapreduce:RunJobFlow",
+          "elasticmapreduce:TerminateJobFlows",
+          "elasticmapreduce:AddJobFlowSteps",
+          "elasticmapreduce:DescribeStep",
+          "elasticmapreduce:DescribeCluster",
+          "elasticmapreduce:ListSteps",
+          "elasticmapreduce:ListClusters"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:elasticmapreduce:eu-west-1:905418032356:cluster/*"
+        ]
       },
       {
         Effect = "Allow"
@@ -60,8 +59,8 @@ resource "aws_iam_role_policy" "airflow_policy" {
           "iam:PassRole"
         ]
         Resource = [
-          "arn:aws:iam::*:role/EMR_DefaultRole",
-          "arn:aws:iam::*:role/EMR_EC2_DefaultRole"
+          "arn:aws:iam::905418032356:role/EMR_DefaultRole",
+          "arn:aws:iam::905418032356:role/EMR_EC2_DefaultRole"
         ]
       },
       {
