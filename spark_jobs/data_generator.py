@@ -77,30 +77,17 @@ def generate_payments(region, n, order_count=1_000_000):
         return None
 
 def save_as_single_file(df, output_path, file_name):
-    """Save a DataFrame as a single Parquet file with the specified name."""
+    """Save a DataFrame as a single Parquet file directly to S3."""
     try:
-        # Write the DataFrame to a temporary directory
-        temp_dir = f"/tmp/temp_{file_name}"  # Use local temporary directory
-        os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
-        df.coalesce(1).write.mode("overwrite").parquet(temp_dir)
+        # Define the full S3 path
+        s3_path = f"{output_path}/{file_name}.parquet"
 
-        # Find the actual Parquet file in the temporary directory
-        for file in os.listdir(temp_dir):
-            if file.endswith(".parquet"):        
-                try:
-                    # Move and rename the file to S3
-                    shutil.move(f"{temp_dir}/{file}", f"{output_path}/{file_name}.parquet")
-                    print(f"Saved {file_name}.parquet to {output_path}")
-                    break
-                except Exception as e:
-                    print(f"Error saving {file_name}.parquet to {output_path}: {e}")
-                    break     
+        # Write the DataFrame directly to S3
+        df.coalesce(1).write.mode("overwrite").parquet(s3_path)
 
-        # Remove the temporary directory
-        shutil.rmtree(temp_dir)
-        print(f"Removed temporary directory: {temp_dir}")
+        print(f"Saved {file_name}.parquet to {s3_path}")
     except Exception as e:
-        print(f"Error saving DataFrame to single file: {e}")
+        print(f"Error saving DataFrame to S3: {e}")
 
 if __name__ == "__main__":
     try:
@@ -111,6 +98,7 @@ if __name__ == "__main__":
 
         # Output directory for the generated data
         output_path = args.output_path
+        print(f"Output path: {output_path}")
 
         # Get today's date for file naming
         today = datetime.now().strftime("%Y-%m-%d")
