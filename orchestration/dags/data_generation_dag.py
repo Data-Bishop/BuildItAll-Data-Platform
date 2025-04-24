@@ -1,7 +1,7 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr import EmrCreateJobFlowOperator, EmrAddStepsOperator, EmrTerminateJobFlowOperator
-from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor
+from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor, EmrJobFlowSensor
 
 default_args = {
     'owner': 'builditall',
@@ -26,14 +26,17 @@ JOB_FLOW_OVERRIDES = {
             },
             {
                 "Name": "Core",
-                "Market": "ON_DEMAND",
+                "Market": "SPOT",
                 "InstanceRole": "CORE",
                 "InstanceType": "m5.xlarge",
-                "InstanceCount": 2,
+                "InstanceCount": 1,
             }
         ],
         "KeepJobFlowAliveWhenNoSteps": True,
         "TerminationProtected": False,
+	"Ec2SubnetId": "subnet-0845fc0a3f7481d13",
+	"EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
+	"EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
     },
     "BootstrapActions": [
         {
@@ -62,22 +65,18 @@ with DAG(
         job_flow_overrides=JOB_FLOW_OVERRIDES,
     )
 
+    wait_for_cluster = EmrJobFlowSensor(
+        task_id='wait_for_cluster',
+        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
+        target_states=['WAITING'],
+        poke_interval=30,
+        timeout=1800,
+    )
+
     generate_step = EmrAddStepsOperator(
         task_id='generate_data',
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
         steps=[
-            {
-                "Name": "Copy Requirements",
-                "ActionOnFailure": "CONTINUE",
-                "HadoopJarStep": {
-                    "Jar": "command-runner.jar",
-                    "Args": [
-                        "aws", "s3", "cp",
-                        "s3://builditall-client-data/scripts/requirements.txt",
-                        "/tmp/requirements.txt"
-                    ]
-                }
-            },
             {
                 "Name": "Generate Synthetic Data",
                 "ActionOnFailure": "TERMINATE_CLUSTER",
@@ -97,7 +96,7 @@ with DAG(
     monitor_generate = EmrStepSensor(
         task_id='monitor_generate_data',
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
-        step_id="{{ task_instance.xcom_pull(task_ids='generate_data', key='return_value')[1] }}",
+        step_id="{{ task_instance.xcom_pull(task_ids='generate_data', key='return_value') }}",
     )
 
     terminate_cluster = EmrTerminateJobFlowOperator(
@@ -105,4 +104,4 @@ with DAG(
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
     )
 
-    create_cluster >> generate_step >> monitor_generate >> terminate_cluster
+    create_cluster >> wait_for_cluster >> generate_step >> monitor_generate >> terminate_cluster

@@ -80,7 +80,7 @@ def save_as_single_file(df, output_path, file_name):
     """Save a DataFrame as a single Parquet file directly to S3."""
     try:
         # Define the full S3 path
-        s3_path = f"{output_path}/{file_name}.parquet"
+        s3_path = f"{output_path}{file_name}.parquet"
 
         # Write the DataFrame directly to S3
         df.coalesce(1).write.mode("overwrite").parquet(s3_path)
