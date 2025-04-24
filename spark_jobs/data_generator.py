@@ -81,6 +81,7 @@ def save_as_single_file(df, output_path, file_name):
     try:
         # Write the DataFrame to a temporary directory
         temp_dir = f"/tmp/temp_{file_name}"  # Use local temporary directory
+        os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
         df.coalesce(1).write.mode("overwrite").parquet(temp_dir)
 
         # Find the actual Parquet file in the temporary directory
