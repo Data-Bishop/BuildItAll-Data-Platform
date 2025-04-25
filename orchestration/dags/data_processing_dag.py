@@ -12,7 +12,7 @@ default_args = {
 }
 
 JOB_FLOW_OVERRIDES = {
-    "Name": "BuildItAll-Data-Generation",
+    "Name": "BuildItAll-Data-Processing",
     "ReleaseLabel": "emr-6.9.0",
     "Applications": [{"Name": "Spark"}],
     "Instances": {
@@ -34,28 +34,20 @@ JOB_FLOW_OVERRIDES = {
         ],
         "KeepJobFlowAliveWhenNoSteps": True,
         "TerminationProtected": False,
-	"Ec2SubnetId": "subnet-0845fc0a3f7481d13",
-	"EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
-	"EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
+        "Ec2SubnetId": "subnet-0845fc0a3f7481d13",
+        "EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
+        "EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
     },
-    "BootstrapActions": [
-        {
-            "Name": "InstallDependencies",
-            "ScriptBootstrapAction": {
-                "Path": "s3://builditall-client-data/scripts/bootstrap.sh",
-            }
-        }
-    ],
     "JobFlowRole": "BuildItAll-EMR-EC2-Profile",
     "ServiceRole": "EMR_DefaultRole",
     "LogUri": "s3://builditall-logs/emr/",
 }
 
 with DAG(
-    'data_generation',
+    'data_processing',
     default_args=default_args,
-    description='Generate synthetic data daily at 9 AM',
-    schedule_interval='0 9 * * *',
+    description='Process synthetic data daily at 6 PM',
+    schedule_interval='0 18 * * *',
     start_date=datetime(2025, 4, 22),
     catchup=False,
 ) as dag:
@@ -73,30 +65,31 @@ with DAG(
         timeout=1800,
     )
 
-    generate_step = EmrAddStepsOperator(
-        task_id='generate_data',
+    process_step = EmrAddStepsOperator(
+        task_id='process_data',
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
         steps=[
             {
-                "Name": "Generate Synthetic Data",
+                "Name": "Process Synthetic Data",
                 "ActionOnFailure": "TERMINATE_CLUSTER",
                 "HadoopJarStep": {
                     "Jar": "command-runner.jar",
                     "Args": [
                         "spark-submit",
                         "--deploy-mode", "cluster",
-                        "s3://builditall-client-data/scripts/data_generator.py",
-                        "--output-path", "s3://builditall-client-data/raw/{{ ds }}/"
+                        "s3://builditall-client-data/scripts/data_processor.py",
+                        "--input-path", "s3://builditall-client-data/raw/{{ ds }}/",
+                        "--output-path", "s3://builditall-client-data/processed/{{ ds }}/"
                     ]
                 }
             }
         ],
     )
 
-    monitor_generate = EmrStepSensor(
-        task_id='monitor_generate_data',
+    monitor_process = EmrStepSensor(
+        task_id='monitor_process_data',
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
-        step_id="{{ task_instance.xcom_pull(task_ids='generate_data', key='return_value')[0] }}",
+        step_id="{{ task_instance.xcom_pull(task_ids='process_data', key='return_value')[0] }}",
     )
 
     terminate_cluster = EmrTerminateJobFlowOperator(
@@ -104,4 +97,4 @@ with DAG(
         job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
     )
 
-    create_cluster >> wait_for_cluster >> generate_step >> monitor_generate >> terminate_cluster
+    create_cluster >> wait_for_cluster >> process_step >> monitor_process >> terminate_cluster

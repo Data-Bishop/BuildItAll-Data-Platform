@@ -3,8 +3,6 @@ from faker import Faker
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType, DateType, TimestampType
 from datetime import datetime
-import os
-import shutil
 import argparse
 
 # Initialize Faker
