@@ -1,9 +1,11 @@
 from datetime import datetime
+
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr import (
-    EmrCreateJobFlowOperator, EmrAddStepsOperator, EmrTerminateJobFlowOperator)
-from airflow.providers.amazon.aws.sensors.emr import (EmrStepSensor,
-                                                      EmrJobFlowSensor)
+    EmrAddStepsOperator, EmrCreateJobFlowOperator, EmrTerminateJobFlowOperator)
+from airflow.providers.amazon.aws.sensors.emr import (EmrJobFlowSensor,
+                                                      EmrStepSensor)
+
 from notification.email_alert import task_fail_alert, task_success_alert
 
 default_args = {
