@@ -1,13 +1,16 @@
 from datetime import datetime
 from airflow import DAG
-from airflow.providers.amazon.aws.operators.emr import EmrCreateJobFlowOperator, EmrAddStepsOperator, EmrTerminateJobFlowOperator
-from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor, EmrJobFlowSensor
+from airflow.providers.amazon.aws.operators.emr import (
+    EmrCreateJobFlowOperator, EmrAddStepsOperator, EmrTerminateJobFlowOperator)
+from airflow.providers.amazon.aws.sensors.emr import (EmrStepSensor,
+                                                      EmrJobFlowSensor)
+from notification.email_alert import task_fail_alert, task_success_alert
 
 default_args = {
     'owner': 'builditall',
     'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
+    'on_failure_callback': task_fail_alert,
+    'on_success_callback': task_success_alert,
     'retries': 2,
 }
 
@@ -34,9 +37,9 @@ JOB_FLOW_OVERRIDES = {
         ],
         "KeepJobFlowAliveWhenNoSteps": True,
         "TerminationProtected": False,
-	"Ec2SubnetId": "subnet-0845fc0a3f7481d13",
-	"EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
-	"EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
+        "Ec2SubnetId": "subnet-0845fc0a3f7481d13",
+        "EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
+        "EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
     },
     "BootstrapActions": [
         {
@@ -67,7 +70,10 @@ with DAG(
 
     wait_for_cluster = EmrJobFlowSensor(
         task_id='wait_for_cluster',
-        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
+        job_flow_id=(
+            "{{ task_instance.xcom_pull(task_ids='create_emr_cluster', "
+            "key='return_value') }}"
+        ),
         target_states=['WAITING'],
         poke_interval=30,
         timeout=1800,
@@ -75,7 +81,10 @@ with DAG(
 
     generate_step = EmrAddStepsOperator(
         task_id='generate_data',
-        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
+        job_flow_id=(
+            "{{ task_instance.xcom_pull(task_ids='create_emr_cluster', "
+            "key='return_value') }}"
+        ),
         steps=[
             {
                 "Name": "Generate Synthetic Data",
@@ -86,7 +95,9 @@ with DAG(
                         "spark-submit",
                         "--deploy-mode", "cluster",
                         "s3://builditall-client-data/scripts/data_generator.py",
-                        "--output-path", "s3://builditall-client-data/raw/{{ ds }}/"
+                        "--output-path", (
+                            "s3://builditall-client-data/raw/{{ ds }}/"
+                        )
                     ]
                 }
             }
@@ -95,13 +106,23 @@ with DAG(
 
     monitor_generate = EmrStepSensor(
         task_id='monitor_generate_data',
-        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
-        step_id="{{ task_instance.xcom_pull(task_ids='generate_data', key='return_value')[0] }}",
+        job_flow_id=(
+            "{{ task_instance.xcom_pull(task_ids='create_emr_cluster', "
+            "key='return_value') }}"
+        ),
+        step_id=(
+            "{{ task_instance.xcom_pull(task_ids='generate_data', "
+            "key='return_value')[0] }}"
+        )
     )
 
     terminate_cluster = EmrTerminateJobFlowOperator(
         task_id='terminate_emr_cluster',
-        job_flow_id="{{ task_instance.xcom_pull(task_ids='create_emr_cluster', key='return_value') }}",
+        job_flow_id=(
+            "{{ task_instance.xcom_pull(task_ids='create_emr_cluster', "
+            "key='return_value') }}",
+        )
     )
 
-    create_cluster >> wait_for_cluster >> generate_step >> monitor_generate >> terminate_cluster
+    create_cluster >> wait_for_cluster >> generate_step >> monitor_generate
+    monitor_generate >> terminate_cluster
