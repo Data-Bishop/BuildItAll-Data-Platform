@@ -15,7 +15,7 @@ def task_fail_alert(context):
     exec_date = context.get("task_instance").start_date
     log = context.get("task_instance").log_url
     env_name = context["params"].get("environment")
-    dag_owner = context["params"].get("dag_owner")
+    dag_owner = context["params"].get("owner")
 
     email_sender = Variable.get('email_sender')
     email_password = Variable.get('email_password')
@@ -67,7 +67,7 @@ def task_success_alert(context):
     Hey {dag_owner}
 
     The task {task} in dag {dag} runninng in {env_name} \
-        has failed for run date {exec_date}
+        has passed for run date {exec_date}
 
     Here is the log url: {log}
     '''
