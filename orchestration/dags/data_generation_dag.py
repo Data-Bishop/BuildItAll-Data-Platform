@@ -1,11 +1,10 @@
 from datetime import datetime
+
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.emr import (
-    EmrCreateJobFlowOperator,
-    EmrAddStepsOperator,
-    EmrTerminateJobFlowOperator,
-)
-from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor, EmrJobFlowSensor
+    EmrAddStepsOperator, EmrCreateJobFlowOperator, EmrTerminateJobFlowOperator)
+from airflow.providers.amazon.aws.sensors.emr import (EmrJobFlowSensor,
+                                                      EmrStepSensor)
 
 default_args = {
     "owner": "builditall",
