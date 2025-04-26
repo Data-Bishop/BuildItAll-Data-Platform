@@ -35,9 +35,33 @@ It is designed to be cost-effective, easy to maintain, and ready for client onbo
 - Automation: GitHub Actions
 - Programming Languages: Python, PySpark
 
+
 ## Deploymemt
 
 ## Key Features
+1. Scalable Big Data Processing
+Built with Apache Spark for seamless handling of large datasets. The platform supports both batch and real-time processing to meet dynamic business needs.
+
+2. Cost-Optimized Cloud Infrastructure
+Utilizes AWS to ensure efficient use of resources, optimizing costs without compromising performance. Built with Terraform for reproducible and version-controlled infrastructure.
+
+3. Modular and Maintainable Architecture
+Designed for easy scalability and maintainability, making future updates or onboarding new team members a smooth process. The modular setup ensures flexibility in adapting to evolving business requirements.
+
+4. Automated Data Pipelines
+Apache Airflow is used for orchestrating complex workflows, ensuring seamless data movement from raw to processed datasets, with monitoring and error handling built-in.
+
+5. Data Storage with AWS S3
+Structured in raw and processed data zones on S3, ensuring efficient data storage and easy access for analytics or future processing.
+
+6. CI/CD Automation
+GitHub Actions for continuous integration and continuous deployment, enabling automated testing, builds, and deployment of code and infrastructure.
+
+7. Production-Ready Setup
+Designed with best practices to meet production-level requirements for performance, security, and maintainability, ensuring readiness for full deployment.
+
+8. Client Onboarding Ready
+Built to be easily understood and managed by the client with a focus on user-friendly maintenance and smooth adoption for future scaling.
 
 ## Best Practices
 
