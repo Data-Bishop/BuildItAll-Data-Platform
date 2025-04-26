@@ -5,6 +5,7 @@ from airflow.providers.amazon.aws.operators.emr import (
     EmrAddStepsOperator, EmrCreateJobFlowOperator, EmrTerminateJobFlowOperator)
 from airflow.providers.amazon.aws.sensors.emr import (EmrJobFlowSensor,
                                                       EmrStepSensor)
+from config.config import configs
 from notification.email_alert import task_fail_alert, task_success_alert
 
 default_args = {
@@ -39,9 +40,9 @@ JOB_FLOW_OVERRIDES = {
         ],
         "KeepJobFlowAliveWhenNoSteps": True,
         "TerminationProtected": False,
-        "Ec2SubnetId": "subnet-0845fc0a3f7481d13",
-        "EmrManagedMasterSecurityGroup": "sg-07a77bd9558cf8ad5",
-        "EmrManagedSlaveSecurityGroup": "sg-002ab4a2ae544fd4c",
+        "Ec2SubnetId": configs["emr_subnet_id"],
+        "EmrManagedMasterSecurityGroup": configs["emr_master_security_group_id"],
+        "EmrManagedSlaveSecurityGroup": configs["emr_slave_security_group_id"],
     },
     "JobFlowRole": "BuildItAll-EMR-EC2-Profile",
     "ServiceRole": "EMR_DefaultRole",
