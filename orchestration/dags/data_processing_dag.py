@@ -6,13 +6,14 @@ from airflow.providers.amazon.aws.operators.emr import (
     EmrTerminateJobFlowOperator,
 )
 from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor, EmrJobFlowSensor
+from notification.email_alert import task_fail_alert, task_success_alert
 
 default_args = {
-    "owner": "builditall",
-    "depends_on_past": False,
-    "email_on_failure": False,
-    "email_on_retry": False,
-    "retries": 2,
+    'owner': 'builditall',
+    'depends_on_past': False,
+    'on_failure_callback': task_fail_alert,
+    'on_success_callback': task_success_alert,
+    'retries': 2,
 }
 
 JOB_FLOW_OVERRIDES = {
