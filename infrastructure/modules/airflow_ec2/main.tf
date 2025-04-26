@@ -144,6 +144,33 @@ resource "aws_instance" "airflow" {
               aws s3 cp s3://builditall-airflow/start-airflow.sh /home/ec2-user/start-airflow.sh
               chmod +x /home/ec2-user/start-airflow.sh
               /home/ec2-user/start-airflow.sh
+
+              # Create a systemd service to sync files from S3
+              cat <<EOT > /etc/systemd/system/s3-sync.service
+              [Unit]
+              Description=Sync Airflow files from S3
+              After=network.target
+
+              [Service]
+              Type=simple
+              ExecStart=/usr/bin/aws s3 sync s3://builditall-airflow/dags/ /home/ec2-user/airflow/dags/
+              ExecStartPost=/usr/bin/aws s3 cp s3://builditall-airflow/requirements/requirements.txt /home/ec2-user/airflow/requirements.txt
+              ExecStartPost=/usr/bin/aws s3 cp s3://builditall-airflow/docker-compose.yml /home/ec2-user/airflow/docker-compose.yml
+              ExecStartPost=/usr/bin/aws s3 cp s3://builditall-airflow/Dockerfile /home/ec2-user/airflow/Dockerfile
+
+              Restart=always
+              RestartSec=300  # Restart every 5 minutes
+
+              [Install]
+              WantedBy=multi-user.target
+              EOT
+
+              # Reload systemd to recognize the new service
+              systemctl daemon-reload
+
+              # Enable and start the service
+              systemctl enable s3-sync.service
+              systemctl start s3-sync.service           
               EOF
   tags = {
     Name        = "${var.project_name}-Airflow"
