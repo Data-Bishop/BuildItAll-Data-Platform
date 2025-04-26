@@ -1,47 +1,51 @@
+data "aws_secretsmanager_secret" "builditall" {
+  name = "builditall-secrets"
+}
+
+data "aws_secretsmanager_secret_version" "builditall" {
+  secret_id = data.aws_secretsmanager_secret.builditall.id
+}
+
+locals {
+  secrets = jsondecode(data.aws_secretsmanager_secret_version.builditall.secret_string)
+}
+
 variable "aws_region" {
-  description = "AWS region for resources"
-  default     = "eu-west-1"
+  default = local.secrets["aws_region"]
 }
 
 variable "project_name" {
-  description = "Project name for tagging"
-  default     = "BuildItAll"
+  default = local.secrets["project_name"]
 }
 
 variable "aws_account_id" {
-  description = "AWS account ID"
+  default = local.secrets["aws_account_id"]
 }
 
 variable "data_bucket_name" {
-  description = "Name of the S3 bucket for data"
-  default     = "builditall-client-data"
+  default = local.secrets["data_bucket_name"]
 }
 
 variable "airflow_bucket_name" {
-  description = "Name of the S3 bucket for Airflow DAGs"
-  default     = "builditall-airflow"
+  default = local.secrets["airflow_bucket_name"]
 }
 
 variable "logs_bucket_name" {
-  description = "Name of the S3 bucket for logs"
-  default     = "builditall-logs"
+  default = local.secrets["logs_bucket_name"]
 }
 
 variable "ami_id" {
-  description = "AMI ID for EC2 (Amazon Linux 2)"
-  default     = "ami-0c55b159cbfafe1f0"
+  default = local.secrets["ami_id"]
 }
 
 variable "vpc_cidr" {
-  description = "VPC CIDR block"
-  default     = "10.0.0.0/16"
+  default = local.secrets["vpc_cidr"]
 }
 
 variable "key_pair_name" {
-  description = "SSH key pair name for bastion"
+  default = local.secrets["key_pair_name"]
 }
 
 variable "allowed_ip" {
-  description = "IP range for bastion SSH and Airflow UI"
-  default     = "203.0.113.0/24"
+  default = local.secrets["allowed_ip"]
 }

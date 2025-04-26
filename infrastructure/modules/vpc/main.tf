@@ -58,7 +58,6 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_eip" "nat" {
-  # vpc = true
   tags = {
     Name        = "${var.project_name}-NAT-EIP"
     Environment = "Prod"
