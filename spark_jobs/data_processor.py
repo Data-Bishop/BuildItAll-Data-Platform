@@ -1,17 +1,22 @@
 import argparse
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import lit
-from datetime import datetime
 
 # Initialize SparkSession
-spark = SparkSession.builder \
-    .appName("DataProcessing") \
-    .config("spark.executor.memory", "2g") \
-    .config("spark.executor.cores", 1) \
-    .config("spark.default.parallelism", 10) \
-    .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-    .config("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain") \
+spark = (
+    SparkSession.builder.appName("DataProcessing")
+    .config("spark.executor.memory", "2g")
+    .config("spark.executor.cores", 1)
+    .config("spark.default.parallelism", 10)
+    .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+    .config(
+        "spark.hadoop.fs.s3a.aws.credentials.provider",
+        "com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
+    )
     .getOrCreate()
+)
+
 
 def process_and_union_files(input_path, output_path, dataset_name):
     """
@@ -41,12 +46,21 @@ def process_and_union_files(input_path, output_path, dataset_name):
     except Exception as e:
         print(f"Error processing {dataset_name}: {e}")
 
+
 if __name__ == "__main__":
     try:
         # Parse command-line arguments
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input-path", required=True, help="Base S3 input path for the Parquet files")
-        parser.add_argument("--output-path", required=True, help="Base S3 output path for the processed files")
+        parser.add_argument(
+            "--input-path",
+            required=True,
+            help="Base S3 input path for the Parquet files",
+        )
+        parser.add_argument(
+            "--output-path",
+            required=True,
+            help="Base S3 output path for the processed files",
+        )
         args = parser.parse_args()
 
         # Input and output paths
