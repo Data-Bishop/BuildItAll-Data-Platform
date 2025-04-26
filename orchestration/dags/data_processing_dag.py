@@ -10,6 +10,7 @@ from notification.email_alert import task_fail_alert, task_success_alert
 default_args = {
     'owner': 'builditall',
     'depends_on_past': False,
+    'environment': 'PROD',
     'on_failure_callback': task_fail_alert,
     'on_success_callback': task_success_alert,
     'retries': 2,
