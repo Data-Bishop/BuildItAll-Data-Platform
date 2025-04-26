@@ -4,15 +4,8 @@ from datetime import datetime
 
 from faker import Faker
 from pyspark.sql import SparkSession
-from pyspark.sql.types import (
-    DateType,
-    FloatType,
-    IntegerType,
-    StringType,
-    StructField,
-    StructType,
-    TimestampType,
-)
+from pyspark.sql.types import (DateType, FloatType, IntegerType, StringType,
+                               StructField, StructType, TimestampType)
 
 # Initialize Faker
 fake = Faker()
