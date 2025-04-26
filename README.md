@@ -23,7 +23,7 @@ It is designed to be cost-effective, easy to maintain, and ready for client onbo
 | [CI/CD (GitHub Actions)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/.github/workflows) | Automates code deployment and infrastructure updates |
 | [Infrastructure (Terraform](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/infrastructure) | Automates cloud setup (IAM, S3, networking) |
 | [Orchestration (Apache Airflow)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/orchestration) | Manages data pipeline workflows |
-| [Synthetic Data Generation (PySpark)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/spark_jobs) | Simulates realistic e-commerce datasets |
+| [Spark jobs (PySpark)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/spark_jobs) | Simulates realistic e-commerce datasets and processing |
 
 ## ☁️ Architecture Overview
 
