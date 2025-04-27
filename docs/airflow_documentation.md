@@ -29,3 +29,34 @@ Apache Airflow is used to orchestrate workflows for data generation and processi
   - Custom configurations are stored in `config/config.py`.
 
 ---
+
+## **3. Workflow**
+### **3.1 Data Generation DAG**
+- **Trigger**: Runs daily at `9:00 AM`.
+- **Steps**:
+  1. Creates an EMR cluster.
+  2. Submits the `data_generator.py` Spark job to generate synthetic data.
+  3. Saves the generated data to the `raw/` folder in the S3 bucket.
+  4. Terminates the EMR cluster.
+
+### **3.2 Data Processing DAG**
+- **Trigger**: Runs daily at `6:00 PM`.
+- **Steps**:
+  1. Creates an EMR cluster.
+  2. Submits the `data_processor.py` Spark job to process raw data into structured formats.
+  3. Saves the processed data to the `processed/` folder in the S3 bucket.
+  4. Terminates the EMR cluster.
+
+---
+
+## **4. Access**
+### **4.1 Airflow UI**
+- **Access Method**:
+  - Use SSH port forwarding or AWS SSM to access the Airflow UI.
+  - Navigate to `http://localhost:8080` in your browser.
+
+### **4.2 Logs**
+- **Location**:
+  - Airflow logs are stored in the `builditall-logs/airflow/` folder in the S3 bucket.
+
+---
