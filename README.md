@@ -26,6 +26,8 @@ It is designed to be cost-effective, easy to maintain, and ready for client onbo
 | [Spark jobs (PySpark)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/spark_jobs) | Simulates realistic e-commerce datasets and processing |
 
 ## ☁️ Architecture Overview
+![workflow](/assests/workflow.svg)
+
 
 ## 🛠️ Technologies Used
 - Cloud: AWS (S3, IAM, etc.)
