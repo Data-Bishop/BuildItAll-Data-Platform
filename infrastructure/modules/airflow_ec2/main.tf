@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "airflow_policy" {
           "elasticmapreduce:ListClusters"
         ]
         Resource = [
-          "arn:aws:elasticmapreduce:eu-west-1:905418032356:cluster/*"
+          "arn:aws:elasticmapreduce:${var.aws_region}:${var.aws_account_id}:cluster/*"
         ]
       },
       {
@@ -59,8 +59,8 @@ resource "aws_iam_role_policy" "airflow_policy" {
           "iam:PassRole"
         ]
         Resource = [
-          "arn:aws:iam::905418032356:role/EMR_DefaultRole",
-          "arn:aws:iam::905418032356:role/EMR_EC2_DefaultRole"
+          "arn:aws:iam::${var.aws_account_id}:role/EMR_DefaultRole",
+          "arn:aws:iam::${var.aws_account_id}:role/EMR_EC2_DefaultRole"
         ]
       },
       {

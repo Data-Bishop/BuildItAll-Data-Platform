@@ -11,41 +11,51 @@ locals {
 }
 
 variable "aws_region" {
-  default = local.secrets["aws_region"]
+  description = "The AWS region to deploy resources in"
+  type        = string
 }
 
 variable "project_name" {
-  default = local.secrets["project_name"]
+  description = "The name of the project"
+  type        = string
 }
 
 variable "aws_account_id" {
-  default = local.secrets["aws_account_id"]
+  description = "The AWS account ID"
+  type        = string
 }
 
 variable "data_bucket_name" {
-  default = local.secrets["data_bucket_name"]
+  description = "The name of the S3 bucket for client data"
+  type        = string
 }
 
 variable "airflow_bucket_name" {
-  default = local.secrets["airflow_bucket_name"]
+  description = "The name of the S3 bucket for Airflow"
+  type        = string
 }
 
 variable "logs_bucket_name" {
-  default = local.secrets["logs_bucket_name"]
+  description = "The name of the S3 bucket for logs"
+  type        = string
 }
 
 variable "ami_id" {
-  default = local.secrets["ami_id"]
+  description = "The AMI ID for the EC2 instance"
+  type        = string
 }
 
 variable "vpc_cidr" {
-  default = local.secrets["vpc_cidr"]
+  description = "The CIDR block for the VPC"
+  type        = string
 }
 
 variable "key_pair_name" {
-  default = local.secrets["key_pair_name"]
+  description = "The name of the EC2 key pair"
+  type        = string
 }
 
 variable "allowed_ip" {
-  default = local.secrets["allowed_ip"]
+  description = "The IP address allowed to access the resources"
+  type        = string
 }
