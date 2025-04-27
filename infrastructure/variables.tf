@@ -1,47 +1,61 @@
+data "aws_secretsmanager_secret" "builditall" {
+  name = "builditall-secrets"
+}
+
+data "aws_secretsmanager_secret_version" "builditall" {
+  secret_id = data.aws_secretsmanager_secret.builditall.id
+}
+
+locals {
+  secrets = jsondecode(data.aws_secretsmanager_secret_version.builditall.secret_string)
+}
+
 variable "aws_region" {
-  description = "AWS region for resources"
-  default     = "eu-west-1"
+  description = "The AWS region to deploy resources in"
+  type        = string
 }
 
 variable "project_name" {
-  description = "Project name for tagging"
-  default     = "BuildItAll"
+  description = "The name of the project"
+  type        = string
 }
 
 variable "aws_account_id" {
-  description = "AWS account ID"
+  description = "The AWS account ID"
+  type        = string
 }
 
 variable "data_bucket_name" {
-  description = "Name of the S3 bucket for data"
-  default     = "builditall-client-data"
+  description = "The name of the S3 bucket for client data"
+  type        = string
 }
 
 variable "airflow_bucket_name" {
-  description = "Name of the S3 bucket for Airflow DAGs"
-  default     = "builditall-airflow"
+  description = "The name of the S3 bucket for Airflow"
+  type        = string
 }
 
 variable "logs_bucket_name" {
-  description = "Name of the S3 bucket for logs"
-  default     = "builditall-logs"
+  description = "The name of the S3 bucket for logs"
+  type        = string
 }
 
 variable "ami_id" {
-  description = "AMI ID for EC2 (Amazon Linux 2)"
-  default     = "ami-0c55b159cbfafe1f0"
+  description = "The AMI ID for the EC2 instance"
+  type        = string
 }
 
 variable "vpc_cidr" {
-  description = "VPC CIDR block"
-  default     = "10.0.0.0/16"
+  description = "The CIDR block for the VPC"
+  type        = string
 }
 
 variable "key_pair_name" {
-  description = "SSH key pair name for bastion"
+  description = "The name of the EC2 key pair"
+  type        = string
 }
 
 variable "allowed_ip" {
-  description = "IP range for bastion SSH and Airflow UI"
-  default     = "203.0.113.0/24"
+  description = "The IP address allowed to access the resources"
+  type        = string
 }

@@ -1,10 +1,23 @@
 variable "project_name" {
   description = "Project name for tagging"
-  default     = "BuildItAll"
+  type        = string
+}
+
+variable "aws_account_id" {
+  description = "AWS account ID"
+  type        = string
+  
+}
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  
 }
 
 variable "vpc_id" {
   description = "VPC ID for EC2"
+  type        = string
 }
 
 variable "private_subnet_ids" {
@@ -14,14 +27,15 @@ variable "private_subnet_ids" {
 
 variable "ami_id" {
   description = "AMI ID for EC2 (Amazon Linux 2)"
-  default     = "ami-0c55b159cbfafe1f0"
+  type        = string
 }
 
 variable "vpc_cidr" {
   description = "VPC CIDR block"
-  default     = "10.0.0.0/16"
+  type        = string
 }
 
 variable "key_pair_name" {
   description = "SSH key pair name"
+  type        = string
 }

@@ -1,6 +1,6 @@
 variable "project_name" {
   description = "Project name for tagging"
-  default     = "BuildItAll"
+  type        = string
 }
 
 variable "vpc_id" {
@@ -10,5 +10,5 @@ variable "vpc_id" {
 
 variable "vpc_cidr" {
   description = "VPC CIDR block"
-  default     = "10.0.0.0/16"
+  type        = string
 }
