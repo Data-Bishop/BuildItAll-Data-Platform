@@ -94,7 +94,7 @@ with DAG(
                         "cluster",
                         "s3://builditall-client-data/scripts/data_generator.py",
                         "--output-path",
-                        "s3://builditall-client-data/raw/{{ ds }}/",
+                        "s3://builditall-client-data/raw/{{ ts[:10] }}/",
                     ],
                 },
             }

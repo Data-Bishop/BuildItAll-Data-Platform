@@ -86,9 +86,9 @@ with DAG(
                         "cluster",
                         "s3://builditall-client-data/scripts/data_processor.py",
                         "--input-path",
-                        "s3://builditall-client-data/raw/{{ ds }}/",
+                        "s3://builditall-client-data/raw/{{ ts[:10] }}/",
                         "--output-path",
-                        "s3://builditall-client-data/processed/{{ ds }}/",
+                        "s3://builditall-client-data/processed/{{ ts[:10] }}/",
                     ],
                 },
             }
