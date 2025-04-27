@@ -2,7 +2,7 @@
 
 ## **1. Repository Structure**
 The repository is organized into directories and files that represent the different components of the **BuildItAll Data Platform**. Below is an overview of the structure:
-
+```graphql
 BuildItAll_Data_Platform/
 ├── .github/
 │   └── workflows/                # GitHub Actions workflows for CI/CD
@@ -45,7 +45,7 @@ BuildItAll_Data_Platform/
 │   ├── requirements.txt          # Python dependencies for Spark jobs
 │   ├── bootstrap.sh              # Bootstrap script for EMR cluster
 ├── .gitignore                    # Git ignore rules
-
+```
 ---
 
 ## **2. CI/CD**

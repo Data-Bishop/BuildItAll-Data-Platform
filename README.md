@@ -8,7 +8,7 @@ This product demonstrates the proposed architecture and solution for enabling la
 ## Team members
 - Choice Ugwuede [Github](https://github.com/Choiceugwuede)
 - Abasifreke Nkanang [Github](https://github.com/Data-Bishop)
-- Adewunmi Olaniyi Oluwaseyi [Github](https://github.com/protechanalysis)
+- Adewunmi Olaniyi [Github](https://github.com/protechanalysis)
 - David Mark [Github](https://github.com/markdave123-py)
 
 ## Overview
@@ -20,14 +20,15 @@ It is designed to be cost-effective, easy to maintain, and ready for client onbo
 
 | Component | Purpose |
 |:----------|:--------|
-| [CI/CD (GitHub Actions)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/.github/workflows) | Automates code deployment and infrastructure updates |
-| [Infrastructure (Terraform](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/infrastructure) | Automates cloud setup (IAM, S3, networking) |
-| [Orchestration (Apache Airflow)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/orchestration) | Manages data pipeline workflows |
-| [Spark jobs (PySpark)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/spark_jobs) | Simulates realistic e-commerce datasets and processing |
+| [CI/CD (GitHub Actions)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/codebase_and_ci_cd.md) | Automates code deployment and infrastructure updates |
+| [Infrastructure (Terraform](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/terraform_infrastructure.md) | Automates cloud setup (IAM, S3, networking) |
+| [Orchestration (Apache Airflow)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/airflow_documentation.md) | Manages data pipeline workflows |
+| [Spark jobs (PySpark)](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/spark_jobs.md) | Simulates realistic e-commerce datasets and processing |
 
 ## ☁️ Architecture Overview
 ![workflow](/assests/workflow.svg)
 
+For Architecture documentation[ Click here](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/architecture.md)
 
 ## 🛠️ Technologies Used
 - Cloud: AWS (S3, IAM, etc.)
@@ -64,9 +65,5 @@ Designed with best practices to meet production-level requirements for performan
 
 8. Client Onboarding Ready
 Built to be easily understood and managed by the client with a focus on user-friendly maintenance and smooth adoption for future scaling.
-
-## Best Practices
-
-
 
 
