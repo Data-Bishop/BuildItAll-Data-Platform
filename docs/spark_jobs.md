@@ -12,17 +12,17 @@ Spark jobs are used for data generation and processing. They run on Amazon EMR c
 - **Inputs**:
   - Configuration parameters (e.g., number of records, schema).
 - **Outputs**:
-  - Synthetic data in CSV or Parquet format.
+  - Synthetic data in Parquet format.
 - **Execution**:
   - Submitted to the EMR cluster by the `data_generation_dag.py` DAG.
 
 ### **2.2 Data Processor**
 - **Script**: `data_processor.py`
-- **Purpose**: Processes raw data into structured formats and saves it to the `processed/` folder in the S3 bucket.
+- **Purpose**: Processes raw data and saves it to the `processed/` folder in the S3 bucket.
 - **Inputs**:
   - Raw data from the `raw/` folder in the S3 bucket.
 - **Outputs**:
-  - Processed data in Parquet or other structured formats.
+  - Processed data in Parquet format.
 - **Execution**:
   - Submitted to the EMR cluster by the `data_processing_dag.py` DAG.
 
@@ -54,3 +54,7 @@ Spark jobs are used for data generation and processing. They run on Amazon EMR c
   - Logs can be accessed via the EMR console or directly from the S3 bucket.
 
 ---
+
+## **6. Notifications**
+- Email notifications have also been set up for task run success and failures.
+- This is handled by the `email_alert.py` script in the `notification` subfolder in the `dags` folder.
