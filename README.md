@@ -27,11 +27,12 @@ It is designed to be cost-effective, easy to maintain, and ready for client onbo
 
 ## ☁️ Architecture Overview
 ![workflow](/assests/workflow.svg)
+Clear [architecture documentation](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/architecture.md) outlining the platform’s design.
 
 For Architecture documentation[ Click here](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/architecture.md)
 
 ## 🛠️ Technologies Used
-- Cloud: AWS (S3, IAM, etc.)
+- Cloud: AWS (S3, IAM)
 - Big Data Framework: Apache Spark
 - Workflow Orchestration: Apache Airflow
 - Infrastructure: Terraform
@@ -40,6 +41,7 @@ For Architecture documentation[ Click here](https://github.com/Data-Bishop/Team5
 
 
 ## Deploymemt
+For immediate use, refer to the [documentation](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/blob/main/docs/onboarding_guuide.md)
 
 ## Key Features
 1. Scalable Big Data Processing
@@ -65,5 +67,14 @@ Designed with best practices to meet production-level requirements for performan
 
 8. Client Onboarding Ready
 Built to be easily understood and managed by the client with a focus on user-friendly maintenance and smooth adoption for future scaling.
+
+## Best Practices
+- Infrastructure as Code (IaC):
+All cloud resources (S3 buckets, IAM roles, networking) are provisioned using Terraform, ensuring reproducibility, version control, and easy updates.
+- Modular Code Structure:
+The repository is neatly organized into modules: infrastructure, orchestration, data generation, and CI/CD, improving maintainability and collaboration.
+- Environment Separation:
+Clear separation between raw and processed data zones in AWS S3, following data lake design principles.
+- Comprehensive [documentations](https://github.com/Data-Bishop/Team5-BuildItAll-Data-Platform/tree/main/docs) to support onboarding, repository cloning, and commercial deployment.
 
 
